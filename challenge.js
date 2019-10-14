@@ -1,9 +1,7 @@
 // increase counter by one every second
 const counter = document.getElementById('counter');
 
-function timer () {setInterval(function(){counter.innerHTML++}, 1000);};
-var interval = timer();
-//interval = timer();
+var timer = setInterval(function () {counter.innerHTML++}, 1000);
 
 // plus and minus buttons that increment or decrement counter
 const minus = document.getElementById('minus');
@@ -18,9 +16,19 @@ const likes = document.querySelector('.likes')
 
 // 4 has been liked x time(s)
 heart.onclick = function() {
-  const like = document.createElement('li')
-  // need if statement for checking if number has already been liked
-  like.innerHTML = `${counter.innerHTML} has been liked`
+  let like = document.getElementById(`${counter.innerHTML}`);
+
+  if (!like) {
+    like = document.createElement('li')
+    like.id = `${counter.innerHTML}`;
+    like.setAttribute("data-likeCounter", 1);
+    like.innerHTML = `${counter.innerHTML} has been liked 1 time`
+  } else {
+    var i = like.getAttribute("data-likeCounter");
+    like.setAttribute("data-likeCounter", i++);
+    like.innerHTML = `${counter.innerHTML} has been liked ${i} times`
+  }
+
   likes.appendChild(like);
 }
 
@@ -34,33 +42,30 @@ pause.onclick = function() {
       plus.disabled = false;
       heart.disabled = false;
       this.innerHTML = "pause";
-      interval;
+      timer = setInterval(function () {counter.innerHTML++}, 1000);
       break;
 
     default:
       minus.disabled = true;
       plus.disabled = true;
       heart.disabled = true;
-      clearInterval(interval);
       this.innerHTML = "resume";
+      clearInterval(timer);
   }
-/*
-  if (this.innerHTML == "resume") {
-    minus.disabled = false;
-    plus.disabled = false;
-    heart.disabled = false;
-    this.innerHTML = "pause";
-  }
-
-  minus.disabled = true;
-  plus.disabled = true;
-  heart.disabled = true;
-  clearInterval(timer);
-  this.innerHTML = "resume";
-*/
-  //different reaction if innerHTML is "resume"
 }
-
-
-
 // comment box that adds comment when submitted
+
+const comments = document.querySelector('.comments');
+const submit = document.getElementById('submit');
+
+
+
+submit.onclick = function (e) {
+  const newComment = document.createElement('p');
+  const comment = document.getElementById('comment-input').value;
+  newComment.innerHTML = `${comment}`;
+  comments.appendChild(newComment);
+  document.getElementById('comment-form').reset();
+
+  e.preventDefault();
+}
